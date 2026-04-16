@@ -1,34 +1,211 @@
-# Gradle files
-.gradle/
-build/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Global News Hub</title>
 
-# Local configuration file (sdk path, etc)
-local.properties
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f1f3f4;
+}
 
-# Log/OS Files
-*.log
+header {
+    background: #202124;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 28px;
+}
 
-# Android Studio generated files and folders
-captures/
-.externalNativeBuild/
-.cxx/
-*.aab
-*.apk
-output-metadata.json
+.search-box {
+    text-align: center;
+    margin: 20px;
+}
 
-# IntelliJ
-*.iml
-.idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+.search-box input {
+    width: 60%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
 
-# Keystore files
-*.jks
-*.keystore
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+.categories button {
+    padding: 10px 15px;
+    border: none;
+    background: #1976d2;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-# Android Profiling
-*.hprof
+.categories button:hover {
+    background: #0d47a1;
+}
+
+.news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 20px;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card h3 {
+    margin-top: 10px;
+}
+
+.card p {
+    color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<header>📰 Global News Hub</header>
+
+<div class="search-box">
+    <input type="text" id="search" placeholder="Search news (AI, movies, sports...)">
+</div>
+
+<div class="categories">
+    <button onclick="filterNews('all')">All</button>
+    <button onclick="filterNews('tech')">Technology</button>
+    <button onclick="filterNews('sports')">Sports</button>
+    <button onclick="filterNews('movies')">Movies</button>
+    <button onclick="filterNews('science')">Science</button>
+    <button onclick="filterNews('world')">World</button>
+</div>
+
+<div class="news-container" id="news"></div>
+
+<script>
+
+const newsData = [
+
+{ title: "AI Robots Enter Daily Life", category: "tech",
+image: "https://images.unsplash.com/photo-1581090700227-1e37b190418e",
+desc: "AI-powered robots are now helping in homes, hospitals, and industries." },
+
+{ title: "NASA Discovers New Earth-like Planet", category: "science",
+image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa",
+desc: "Scientists believe the planet could support life and water." },
+
+{ title: "Cristiano Ronaldo Breaks Another Record", category: "sports",
+image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2",
+desc: "The football legend scores a stunning goal in last night's match." },
+
+{ title: "Top 10 Movies You Must Watch in 2026", category: "movies",
+image: "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4",
+desc: "From action to romance, these movies are trending worldwide." },
+
+{ title: "NIFTY Crosses 24,300 Mark", category: "world",
+image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
+desc: "Indian stock market shows strong bullish trend with major gains in banking and IT sectors." },
+
+{ title: "SENSEX Surges Over 600 Points", category: "world",
+image: "https://images.unsplash.com/photo-1559526324-593bc073d938",
+desc: "Markets rally due to global positive cues and falling oil prices." },
+
+{ title: "Bitcoin Hits New High", category: "tech",
+image: "https://images.unsplash.com/photo-1621761191319-c6fb62004040",
+desc: "Crypto market rises as Bitcoin reaches record levels." },
+
+{ title: "India Wins Cricket Thriller", category: "sports",
+image: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e",
+desc: "Exciting last-over victory shocks fans worldwide." },
+
+{ title: "New AI Tool Competes with ChatGPT", category: "tech",
+image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+desc: "Companies launch advanced AI systems in competitive market." },
+
+{ title: "Hollywood Announces Avatar Sequel", category: "movies",
+image: "https://images.unsplash.com/photo-1505685296765-3a2736de412f",
+desc: "Next Avatar movie promises groundbreaking visuals." },
+
+{ title: "Scientists Discover New Cancer Cure", category: "science",
+image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+desc: "Medical breakthrough offers hope to millions." },
+
+{ title: "Global Oil Prices Drop", category: "world",
+image: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d",
+desc: "Falling oil prices boost global economy." }
+
+];
+
+// Display
+function displayNews(data) {
+    let container = document.getElementById("news");
+    container.innerHTML = "";
+
+    if(data.length === 0){
+        container.innerHTML = "<h2>No news found 😢</h2>";
+        return;
+    }
+
+    data.forEach(news => {
+        container.innerHTML += `
+        <div class="card">
+            <img src="${news.image}">
+            <h3>${news.title}</h3>
+            <p>${news.desc}</p>
+        </div>
+        `;
+    });
+}
+
+// Filter
+function filterNews(category) {
+    if(category === "all") {
+        displayNews(newsData);
+    } else {
+        displayNews(newsData.filter(n => n.category === category));
+    }
+}
+
+// Search
+document.getElementById("search").addEventListener("input", function() {
+    let value = this.value.toLowerCase();
+
+    let filtered = newsData.filter(n =>
+        n.title.toLowerCase().includes(value) ||
+        n.desc.toLowerCase().includes(value)
+    );
+
+    displayNews(filtered);
+});
+
+// Load all
+displayNews(newsData);
+
+</script>
+
+</body>
+</html>
